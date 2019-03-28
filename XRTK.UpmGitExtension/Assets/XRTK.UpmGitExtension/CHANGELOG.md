@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.0](https://github.com/XRTK/UpmGitExtension/tree/1.0.0) (2019-03-28)
+
+**Implemented enhancements:**
+
+- Refactored into XRTK package with new guids
+- misc cleanup and formatting
+
 ## [0.8.0](https://github.com/mob-sakai/UpmGitExtension/tree/0.8.0) (2019-02-23)
 
 [Full Changelog](https://github.com/mob-sakai/UpmGitExtension/compare/0.7.0...0.8.0)
