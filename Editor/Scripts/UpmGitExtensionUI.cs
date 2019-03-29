@@ -23,7 +23,7 @@ namespace XRTK.PackageManager
 #if UPM_GIT_EXT_PROJECT
         private const string ResourcesPath = "Assets/XRTK.UpmGitExtension/Editor/Resources/";
 #else
-		const string ResourcesPath = "Packages/com.xrtk.upm-git-extension/Editor/Resources/";
+        const string ResourcesPath = "Packages/com.xrtk.upm-git-extension/Editor/Resources/";
 #endif
         private const string TemplatePath = ResourcesPath + "UpmGitExtension.uxml";
         private const string StylePath = ResourcesPath + "UpmGitExtension.uss";
