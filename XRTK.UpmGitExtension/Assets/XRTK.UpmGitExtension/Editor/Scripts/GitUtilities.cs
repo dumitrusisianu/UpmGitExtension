@@ -9,6 +9,8 @@ namespace XRTK.PackageManager
 {
     internal static class GitUtilities
     {
+        private const string k_Path = "Temp/UpmGit";
+
         public static bool IsGitRunning { get; private set; }
 
         private static readonly StringBuilder s_sbError = new StringBuilder();
@@ -38,11 +40,10 @@ namespace XRTK.PackageManager
 
         public static void GetPackageJson(string repoUrl, string branch, Action<string> onPackageFetch)
         {
-            const string kPath = "Temp/UpmGit";
-            FileUtil.DeleteFileOrDirectory(kPath);
+            FileUtil.DeleteFileOrDirectory(k_Path);
 
-            string args = $"clone --depth=1 --branch {branch} --single-branch {repoUrl} {kPath}";
-            ExecuteGitCommand(args, (_, __) => onPackageFetch(PackageJsonHelper.GetPackageName(kPath)));
+            string args = $"clone --depth=1 --branch {branch} --single-branch {repoUrl} {k_Path}";
+            ExecuteGitCommand(args, (_, __) => onPackageFetch(PackageJsonHelper.GetPackageName(k_Path)));
         }
 
         private static void ExecuteGitCommand(string args, GitCommandCallback gitCommandCallback)

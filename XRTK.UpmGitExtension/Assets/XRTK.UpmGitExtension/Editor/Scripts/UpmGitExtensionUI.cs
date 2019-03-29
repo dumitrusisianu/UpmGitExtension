@@ -146,12 +146,11 @@ namespace XRTK.PackageManager
 
         private void InitializeUI()
         {
-            if (_initialized)
-                return;
+            if (_initialized) { return; }
 
             var asset = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(TemplatePath);
-            if (!asset)
-                return;
+
+            if (!asset) { return; }
 
 #if UNITY_2019_1_OR_NEWER
             _gitDetailActoins = asset.CloneTree().Q("detailActions");
@@ -232,7 +231,7 @@ namespace XRTK.PackageManager
             {
                 string target = t;
                 bool isCurrent = currentRefName == target;
-                GUIContent text = new GUIContent("All Versions/Other/" + (isCurrent ? target + " - current" : target));
+                var text = new GUIContent($"All Versions/Other/{(isCurrent ? $"{target} - current" : target)}");
                 menu.AddItem(text, isCurrent, SetVersion, target);
             }
 
@@ -241,7 +240,7 @@ namespace XRTK.PackageManager
 
         private void SetVersion(object version)
         {
-            string ver = version as string;
+            var ver = version as string;
             _versionPopup.text = ver;
             _updateButton.SetEnabled(_currentRefName != _selectedRefName);
         }
@@ -283,11 +282,11 @@ namespace XRTK.PackageManager
             }
 
             menu.AddItem(new GUIContent("Add package from disk..."), false, AddPackageFromDiskWindow);
-            menu.AddItem(new GUIContent("Add package from URL..."), false, AddPackageFromGitWindow);
+            menu.AddItem(new GUIContent("Add package from URL..."), false, ShowUpmGitAddWindow);
             menu.DropDown(menuRect);
         }
 
-        private static void AddPackageFromGitWindow()
+        private static void ShowUpmGitAddWindow()
         {
             EditorWindow.GetWindow<UpmGitAddWindow>(true);
         }
