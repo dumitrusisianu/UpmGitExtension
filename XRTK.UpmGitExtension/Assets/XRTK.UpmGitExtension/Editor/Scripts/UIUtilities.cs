@@ -4,18 +4,19 @@ namespace XRTK.PackageManager
 {
     internal static class UIUtilities
     {
-        private const string kDisplayNone = "display-none";
+        private const string k_DisplayNone = "display-none";
+
         public static void SetElementDisplay(VisualElement element, bool value)
         {
             if (element == null) { return; }
 
-            SetElementClass(element, kDisplayNone, !value);
+            SetElementClass(element, k_DisplayNone, !value);
             element.visible = value;
         }
 
         public static bool IsElementDisplay(VisualElement element)
         {
-            return !HasElementClass(element, kDisplayNone);
+            return !HasElementClass(element, k_DisplayNone);
         }
 
         public static void SetElementClass(VisualElement element, string className, bool value)

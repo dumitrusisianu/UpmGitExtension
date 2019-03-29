@@ -21,7 +21,7 @@ namespace XRTK.PackageManager
     internal class UpmGitExtensionUI : VisualElement, IPackageManagerExtension
     {
 #if UPM_GIT_EXT_PROJECT
-        private const string ResourcesPath = "Assets/UpmGitExtension/Editor/Resources/";
+        private const string ResourcesPath = "Assets/XRTK.UpmGitExtension/Editor/Resources/";
 #else
 		const string ResourcesPath = "Packages/com.xrtk.upm-git-extension/Editor/Resources/";
 #endif
@@ -32,16 +32,16 @@ namespace XRTK.PackageManager
 
         private bool _initialized = false;
         private PackageInfo _packageInfo;
-        private Button _hostingIcon => _gitDetailActoins.Q<Button>("hostingIcon");
-        private Button _viewDocumentation => _gitDetailActoins.Q<Button>("viewDocumentation");
-        private Button _viewChangelog => _gitDetailActoins.Q<Button>("viewChangelog");
-        private Button _viewLicense => _gitDetailActoins.Q<Button>("viewLicense");
+        private Button _hostingIcon => _gitDetailActions.Q<Button>("hostingIcon");
+        private Button _viewDocumentation => _gitDetailActions.Q<Button>("viewDocumentation");
+        private Button _viewChangelog => _gitDetailActions.Q<Button>("viewChangelog");
+        private Button _viewLicense => _gitDetailActions.Q<Button>("viewLicense");
         private string _currentRefName => PackageUtilities.GetRefName(_packageInfo.packageId);
         private string _selectedRefName => _versionPopup.text != "(default)" ? _versionPopup.text : "";
         private VisualElement _detailControls;
         private VisualElement _documentationContainer;
         private VisualElement _originalDetailActions;
-        private VisualElement _gitDetailActoins;
+        private VisualElement _gitDetailActions;
         private VisualElement _originalAddButton;
         private VisualElement _addButton;
         private Button _versionPopup;
@@ -102,7 +102,7 @@ namespace XRTK.PackageManager
 
             var isGit = packageInfo.source == PackageSource.Git;
 
-            UIUtilities.SetElementDisplay(_gitDetailActoins, isGit);
+            UIUtilities.SetElementDisplay(_gitDetailActions, isGit);
             UIUtilities.SetElementDisplay(_originalDetailActions, !isGit);
             UIUtilities.SetElementDisplay(_detailControls.Q("", "popupField"), !isGit);
             UIUtilities.SetElementDisplay(_updateButton, isGit);
@@ -157,8 +157,8 @@ namespace XRTK.PackageManager
             _gitDetailActoins = asset.CloneTree().Q("detailActions");
             _gitDetailActoins.styleSheets.Add(AssetDatabase.LoadAssetAtPath<StyleSheet> (StylePath));
 #else
-            _gitDetailActoins = asset.CloneTree(null).Q("detailActions");
-            _gitDetailActoins.AddStyleSheetPath(StylePath);
+            _gitDetailActions = asset.CloneTree(null).Q("detailActions");
+            _gitDetailActions.AddStyleSheetPath(StylePath);
 #endif
 
             // Add callbacks
@@ -171,7 +171,7 @@ namespace XRTK.PackageManager
             _detailControls = parent.parent.Q("detailsControls") ?? parent.parent.parent.parent.Q("packageToolBar");
             _documentationContainer = parent.parent.Q("documentationContainer");
             _originalDetailActions = _documentationContainer.Q("detailActions");
-            _documentationContainer.Add(_gitDetailActoins);
+            _documentationContainer.Add(_gitDetailActions);
 
             _updateButton = new Button(AddOrUpdatePackage) { name = "update", text = "Up to date" };
             _updateButton.AddToClassList("action");
@@ -199,7 +199,7 @@ namespace XRTK.PackageManager
             }
 
             // Add package button
-            var root = UIUtilities.GetRoot(_gitDetailActoins);
+            var root = UIUtilities.GetRoot(_gitDetailActions);
             _originalAddButton = root.Q("toolbarAddButton") ?? root.Q("moreAddOptionsButton");
             _addButton = new Button(AddPackage) { name = "moreAddOptionsButton", text = "+" };
             _addButton.AddToClassList("toolbarButton");
