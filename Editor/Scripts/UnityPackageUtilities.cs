@@ -9,7 +9,7 @@ using PackageInfo = UnityEditor.PackageManager.PackageInfo;
 
 namespace XRTK.PackageManager
 {
-    internal static class PackageUtilities
+    internal static class UnityPackageUtilities
     {
         public static bool IsBusy => GitUtilities.IsGitRunning || (_request != null && _request.Status == StatusCode.InProgress);
 

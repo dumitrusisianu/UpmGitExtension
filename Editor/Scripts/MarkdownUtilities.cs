@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace XRTK.PackageManager
 {
-    internal static class MarkdownUtils
+    internal static class MarkdownUtilities
     {
         private const string k_CssFileName = "github-markdown";
 

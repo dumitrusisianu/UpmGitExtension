@@ -64,30 +64,30 @@ namespace XRTK.PackageManager
         {
             EditorGUIUtility.labelWidth = 100;
 
-            using (new EditorGUI.DisabledScope(PackageUtilities.IsBusy))
+            using (new EditorGUI.DisabledScope(UnityPackageUtilities.IsBusy))
             {
                 using (var ccs = new EditorGUI.ChangeCheckScope())
                 {
                     using (new EditorGUILayout.HorizontalScope())
                     {
-                        GUI.SetNextControlName("Repogitory URL");
-                        _url = EditorGUILayout.TextField("Repogitory URL", _url);
+                        GUI.SetNextControlName("Repository URL");
+                        _url = EditorGUILayout.TextField("Repository URL", _url);
 
                         if (!_focused)
                         {
-                            EditorGUI.FocusTextInControl("Repogitory URL");
+                            EditorGUI.FocusTextInControl("Repository URL");
                             _focused = true;
                         }
 
                         if (ccs.changed)
                         {
-                            _repoUrl = PackageUtilities.GetRepoUrl(_url);
+                            _repoUrl = UnityPackageUtilities.GetRepoUrl(_url);
                             _version = "-- Select Version --";
                             _packageId = "";
                             GitUtilities.GetRefs(_url, _refs, DelayedRepaint);
                         }
 
-                        if (!PackageUtilities.IsBusy && !string.IsNullOrEmpty(_url) && _refs.Count == 0)
+                        if (!UnityPackageUtilities.IsBusy && !string.IsNullOrEmpty(_url) && _refs.Count == 0)
                         {
                             GUILayout.Label(_errorUrl, GUILayout.Width(20));
                         }
@@ -110,7 +110,7 @@ namespace XRTK.PackageManager
                     {
                         if (GUILayout.Button(new GUIContent("Add", $"Add a package '{_packageId}' to the project."), EditorStyles.miniButton, GUILayout.Width(60)))
                         {
-                            PackageUtilities.AddPackage(_packageId, CheckStatus);
+                            UnityPackageUtilities.AddPackage(_packageId, CheckStatus);
                         }
                     }
 
