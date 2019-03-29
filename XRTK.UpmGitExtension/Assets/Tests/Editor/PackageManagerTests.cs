@@ -26,7 +26,7 @@ namespace XRTK.PackageManager.Tests
         [TestCase(packageName + "@git:git@github.com:" + userRepo + ".git#0.3.0", ExpectedResult = repoURL)]
         public string GetRepoURLTest(string packageId)
         {
-            return PackageUtilities.GetRepoHttpUrl(packageId);
+            return UnityPackageUtilities.GetRepoHttpUrl(packageId);
         }
 
         [TestCase("", ExpectedResult = "")]
@@ -40,7 +40,7 @@ namespace XRTK.PackageManager.Tests
         [TestCase(packageName + "@git:git@github.com:" + userRepo + ".git#0.3.0", ExpectedResult = userRepo)]
         public string GetRepoIdTest(string packageId)
         {
-            return PackageUtilities.GetRepoId(packageId);
+            return UnityPackageUtilities.GetRepoId(packageId);
         }
 
         [TestCase("", ExpectedResult = true)]

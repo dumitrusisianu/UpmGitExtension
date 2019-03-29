@@ -36,7 +36,7 @@ namespace XRTK.PackageManager
         private Button _viewDocumentation => _gitDetailActions.Q<Button>("viewDocumentation");
         private Button _viewChangelog => _gitDetailActions.Q<Button>("viewChangelog");
         private Button _viewLicense => _gitDetailActions.Q<Button>("viewLicense");
-        private string _currentRefName => PackageUtilities.GetRefName(_packageInfo.packageId);
+        private string _currentRefName => UnityPackageUtilities.GetRefName(_packageInfo.packageId);
         private string _selectedRefName => _versionPopup.text != "(default)" ? _versionPopup.text : "";
         private VisualElement _detailControls;
         private VisualElement _documentationContainer;
@@ -116,7 +116,7 @@ namespace XRTK.PackageManager
                 _versionPopup.SetEnabled(false);
                 _updateButton.SetEnabled(false);
 
-                GitUtilities.GetRefs(PackageUtilities.GetRepoHttpUrl(_packageInfo.packageId), _refs, CheckCurrentRef);
+                GitUtilities.GetRefs(UnityPackageUtilities.GetRepoHttpUrl(_packageInfo.packageId), _refs, CheckCurrentRef);
 
                 SetVersion(_currentRefName);
 
@@ -162,10 +162,10 @@ namespace XRTK.PackageManager
 #endif
 
             // Add callbacks
-            _hostingIcon.clickable.clicked += () => Application.OpenURL(PackageUtilities.GetRepoHttpUrl(_packageInfo));
-            _viewDocumentation.clickable.clicked += () => MarkdownUtils.OpenInBrowser(PackageUtilities.GetFilePath(_packageInfo, "README.*"));
-            _viewChangelog.clickable.clicked += () => MarkdownUtils.OpenInBrowser(PackageUtilities.GetFilePath(_packageInfo, "CHANGELOG.*"));
-            _viewLicense.clickable.clicked += () => MarkdownUtils.OpenInBrowser(PackageUtilities.GetFilePath(_packageInfo, "LICENSE.*"));
+            _hostingIcon.clickable.clicked += () => Application.OpenURL(UnityPackageUtilities.GetRepoHttpUrl(_packageInfo));
+            _viewDocumentation.clickable.clicked += () => MarkdownUtilities.OpenInBrowser(UnityPackageUtilities.GetFilePath(_packageInfo, "README.*"));
+            _viewChangelog.clickable.clicked += () => MarkdownUtilities.OpenInBrowser(UnityPackageUtilities.GetFilePath(_packageInfo, "CHANGELOG.*"));
+            _viewLicense.clickable.clicked += () => MarkdownUtilities.OpenInBrowser(UnityPackageUtilities.GetFilePath(_packageInfo, "LICENSE.*"));
 
             // Move element to documentationContainer
             _detailControls = parent.parent.Q("detailsControls") ?? parent.parent.parent.parent.Q("packageToolBar");
@@ -249,8 +249,8 @@ namespace XRTK.PackageManager
         private void AddOrUpdatePackage()
         {
             var target = _versionPopup.text != "(default)" ? _versionPopup.text : "";
-            var id = PackageUtilities.GetSpecificPackageId(_packageInfo.packageId, target);
-            PackageUtilities.AddPackage(id);
+            var id = UnityPackageUtilities.GetSpecificPackageId(_packageInfo.packageId, target);
+            UnityPackageUtilities.AddPackage(id);
 
             _versionPopup.SetEnabled(false);
             _updateButton.SetEnabled(false);
