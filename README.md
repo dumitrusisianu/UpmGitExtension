@@ -64,7 +64,7 @@ Find `Packages/manifest.json` in your project and edit it to look like this:
 ```js
 {
   "dependencies": {
-    "com.xrtk.upm-git-extension": "https://github.com/XRTK/UpmGitExtension.git#0.8.0",
+    "com.xrtk.upm-git-extension": "https://github.com/XRTK/UpmGitExtension.git#1.0.0",
     ...
   },
 }
