@@ -153,8 +153,8 @@ namespace XRTK.PackageManager
             if (!asset) { return; }
 
 #if UNITY_2019_1_OR_NEWER
-            _gitDetailActoins = asset.CloneTree().Q("detailActions");
-            _gitDetailActoins.styleSheets.Add(AssetDatabase.LoadAssetAtPath<StyleSheet> (StylePath));
+            _gitDetailActions = asset.CloneTree().Q("detailActions");
+            _gitDetailActions.styleSheets.Add(AssetDatabase.LoadAssetAtPath<StyleSheet> (StylePath));
 #else
             _gitDetailActions = asset.CloneTree(null).Q("detailActions");
             _gitDetailActions.AddStyleSheetPath(StylePath);
