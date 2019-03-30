@@ -1,6 +1,6 @@
 # Changelog
 
-## [1.0.0](https://github.com/XRTK/UpmGitExtension/tree/1.0.0) (2019-03-28)
+## [0.9.0](https://github.com/XRTK/UpmGitExtension/tree/0.9.0) (2019-03-29)
 
 **Implemented enhancements:**
 
