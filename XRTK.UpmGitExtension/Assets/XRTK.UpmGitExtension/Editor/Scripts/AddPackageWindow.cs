@@ -12,6 +12,7 @@ namespace XRTK.PackageManager
     public class UpmGitAddWindow : EditorWindow
     {
         private bool _focused;
+        private bool _ready;
         private string _url = "";
         private string _repoUrl = "";
         private string _version = "(default)";
@@ -28,6 +29,7 @@ namespace XRTK.PackageManager
             minSize = new Vector2(300, 40);
             maxSize = new Vector2(600, 40);
             titleContent = new GUIContent("Add package from URL");
+            _ready = false;
         }
 
         private void PopupVersions(Action<string> onVersionChanged)
@@ -37,7 +39,7 @@ namespace XRTK.PackageManager
 
             void Callback(object x) => onVersionChanged(x as string);
 
-            // x.y(.z-sufix) only 
+            // x.y(.z-suffix) only 
             foreach (var t in _refs.Where(x => Regex.IsMatch(x, "^\\d+\\.\\d+.*$")).OrderByDescending(x => x))
             {
                 string target = t;
@@ -47,7 +49,7 @@ namespace XRTK.PackageManager
             }
 
             // other 
-            menu.AddItem(new GUIContent("Other/(default)"), currentRefName == "", Callback, "(default)");
+            menu.AddItem(new GUIContent("Other/(default)"), currentRefName == "", Callback, _version);
 
             foreach (var t in _refs.Where(x => !Regex.IsMatch(x, "^\\d+\\.\\d+.*$")).OrderByDescending(x => x))
             {
@@ -64,33 +66,35 @@ namespace XRTK.PackageManager
         {
             EditorGUIUtility.labelWidth = 100;
 
+            if (_focused &&
+                (Event.current.keyCode == KeyCode.Return ||
+                 Event.current.keyCode == KeyCode.Tab))
+            {
+                _ready = true;
+                _focused = false;
+                GUI.FocusControl(null);
+            }
+
             using (new EditorGUI.DisabledScope(UnityPackageUtilities.IsBusy))
             {
-                using (var ccs = new EditorGUI.ChangeCheckScope())
+                using (new EditorGUILayout.HorizontalScope())
                 {
-                    using (new EditorGUILayout.HorizontalScope())
+                    GUI.SetNextControlName("Repository URL");
+                    _url = EditorGUILayout.TextField("Repository URL", _url);
+                    _focused = GUI.GetNameOfFocusedControl().Equals("Repository URL");
+
+                    if (_ready)
                     {
-                        GUI.SetNextControlName("Repository URL");
-                        _url = EditorGUILayout.TextField("Repository URL", _url);
+                        _ready = false;
+                        _repoUrl = UnityPackageUtilities.GetRepoUrl(_url);
+                        _version = "-- Select Version --";
+                        _packageId = "";
+                        GitUtilities.GetRefs(_url, _refs, null);
+                    }
 
-                        if (!_focused)
-                        {
-                            EditorGUI.FocusTextInControl("Repository URL");
-                            _focused = true;
-                        }
-
-                        if (ccs.changed)
-                        {
-                            _repoUrl = UnityPackageUtilities.GetRepoUrl(_url);
-                            _version = "-- Select Version --";
-                            _packageId = "";
-                            GitUtilities.GetRefs(_url, _refs, DelayedRepaint);
-                        }
-
-                        if (!UnityPackageUtilities.IsBusy && !string.IsNullOrEmpty(_url) && _refs.Count == 0)
-                        {
-                            GUILayout.Label(_errorUrl, GUILayout.Width(20));
-                        }
+                    if (!UnityPackageUtilities.IsBusy && !string.IsNullOrEmpty(_url) && _refs.Count == 0)
+                    {
+                        GUILayout.Label(_errorUrl, GUILayout.Width(20));
                     }
                 }
 
@@ -134,8 +138,6 @@ namespace XRTK.PackageManager
             _packageId = !string.IsNullOrEmpty(packageName)
                 ? $"{packageName}@{_repoUrl}#{_version}"
                 : null;
-
-            EditorApplication.delayCall += DelayedRepaint;
         }
 
         private void CheckStatus(Request req)
@@ -144,11 +146,6 @@ namespace XRTK.PackageManager
             {
                 Close();
             }
-        }
-
-        private static void DelayedRepaint()
-        {
-            EditorApplication.delayCall += DelayedRepaint;
         }
     }
 }
