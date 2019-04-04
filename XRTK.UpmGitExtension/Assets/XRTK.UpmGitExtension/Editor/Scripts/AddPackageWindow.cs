@@ -39,7 +39,7 @@ namespace XRTK.PackageManager
 
             void Callback(object x) => onVersionChanged(x as string);
 
-            // x.y(.z-sufix) only 
+            // x.y(.z-suffix) only 
             foreach (var t in _refs.Where(x => Regex.IsMatch(x, "^\\d+\\.\\d+.*$")).OrderByDescending(x => x))
             {
                 string target = t;
@@ -49,7 +49,7 @@ namespace XRTK.PackageManager
             }
 
             // other 
-            menu.AddItem(new GUIContent("Other/(default)"), currentRefName == "", Callback, "(default)");
+            menu.AddItem(new GUIContent("Other/(default)"), currentRefName == "", Callback, _version);
 
             foreach (var t in _refs.Where(x => !Regex.IsMatch(x, "^\\d+\\.\\d+.*$")).OrderByDescending(x => x))
             {
@@ -89,7 +89,7 @@ namespace XRTK.PackageManager
                         _repoUrl = UnityPackageUtilities.GetRepoUrl(_url);
                         _version = "-- Select Version --";
                         _packageId = "";
-                        GitUtilities.GetRefs(_url, _refs, DelayedRepaint);
+                        GitUtilities.GetRefs(_url, _refs, null);
                     }
 
                     if (!UnityPackageUtilities.IsBusy && !string.IsNullOrEmpty(_url) && _refs.Count == 0)
@@ -138,8 +138,6 @@ namespace XRTK.PackageManager
             _packageId = !string.IsNullOrEmpty(packageName)
                 ? $"{packageName}@{_repoUrl}#{_version}"
                 : null;
-
-            EditorApplication.delayCall += DelayedRepaint;
         }
 
         private void CheckStatus(Request req)
@@ -148,11 +146,6 @@ namespace XRTK.PackageManager
             {
                 Close();
             }
-        }
-
-        private static void DelayedRepaint()
-        {
-            EditorApplication.delayCall += DelayedRepaint;
         }
     }
 }
