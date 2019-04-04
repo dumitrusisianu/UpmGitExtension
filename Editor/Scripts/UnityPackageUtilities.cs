@@ -19,8 +19,8 @@ namespace XRTK.PackageManager
         public static string GetRepoUrl(string url)
         {
             Match m = Regex.Match(url, "(git@[^:]+):(.*)");
-            string ret = m.Success ? $"ssh://{m.Groups[1].Value}/{m.Groups[2].Value}" : url;
-            return ret.EndsWith(".git") ? ret : $"{ret}.git";
+            string repoUrl = m.Success ? $"ssh://{m.Groups[1].Value}/{m.Groups[2].Value}" : url;
+            return repoUrl.EndsWith(".git") ? repoUrl : $"{repoUrl}.git";
         }
 
         public static string GetRepoHttpUrl(PackageInfo packageInfo)
@@ -32,18 +32,16 @@ namespace XRTK.PackageManager
         {
             Match m = Regex.Match(packageId, "^[^@]+@([^#]+)(#.+)?$");
 
-            if (m.Success)
-            {
-                var repoUrl = m.Groups[1].Value;
-                repoUrl = Regex.Replace(repoUrl, "(git:)?git@([^:]+):", "https://$2/");
-                repoUrl = repoUrl.Replace("ssh://", "https://");
-                repoUrl = repoUrl.Replace("git@", "");
-                repoUrl = Regex.Replace(repoUrl, "\\.git$", "");
+            if (!m.Success) { return ""; }
 
-                return repoUrl;
-            }
+            var repoUrl = m.Groups[1].Value;
+            repoUrl = Regex.Replace(repoUrl, "(git:)?git@([^:]+):", "https://$2/");
+            repoUrl = repoUrl.Replace("ssh://", "https://");
+            repoUrl = repoUrl.Replace("git@", "");
+            repoUrl = Regex.Replace(repoUrl, "\\.git$", "");
 
-            return "";
+            return repoUrl;
+
         }
 
         public static string GetRefName(string packageId)
