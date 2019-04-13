@@ -13,10 +13,10 @@ namespace XRTK.PackageManager
     {
         private bool _focused;
         private bool _ready;
-        private string _url = "";
-        private string _repoUrl = "";
+        private string _url = string.Empty;
+        private string _repoUrl = string.Empty;
         private string _version = "(default)";
-        private string _packageId = "";
+        private string _packageId = string.Empty;
         private readonly List<string> _refs = new List<string>();
 
         private GUIContent _errorUrl;
@@ -40,21 +40,19 @@ namespace XRTK.PackageManager
             void Callback(object x) => onVersionChanged(x as string);
 
             // x.y(.z-suffix) only 
-            foreach (var t in _refs.Where(x => Regex.IsMatch(x, "^\\d+\\.\\d+.*$")).OrderByDescending(x => x))
+            foreach (var target in _refs.Where(x => Regex.IsMatch(x, "^\\d+\\.\\d+.*$")).OrderByDescending(x => x))
             {
-                string target = t;
-                bool isCurrent = currentRefName == target;
+                var isCurrent = currentRefName == target;
                 var text = new GUIContent(target);
                 menu.AddItem(text, isCurrent, Callback, target);
             }
 
             // other 
-            menu.AddItem(new GUIContent("Other/(default)"), currentRefName == "", Callback, _version);
+            menu.AddItem(new GUIContent("Other/(default)"), currentRefName == string.Empty, Callback, _version);
 
-            foreach (var t in _refs.Where(x => !Regex.IsMatch(x, "^\\d+\\.\\d+.*$")).OrderByDescending(x => x))
+            foreach (var target in _refs.Where(x => !Regex.IsMatch(x, "^\\d+\\.\\d+.*$")).OrderByDescending(x => x))
             {
-                string target = t;
-                bool isCurrent = currentRefName == target;
+                var isCurrent = currentRefName == target;
                 var text = new GUIContent($"Other/{target}");
                 menu.AddItem(text, isCurrent, Callback, target);
             }
@@ -88,7 +86,7 @@ namespace XRTK.PackageManager
                         _ready = false;
                         _repoUrl = UnityPackageUtilities.GetRepoUrl(_url);
                         _version = "-- Select Version --";
-                        _packageId = "";
+                        _packageId = string.Empty;
                         GitUtilities.GetRefs(_url, _refs, null);
                     }
 
@@ -129,7 +127,7 @@ namespace XRTK.PackageManager
         private void OnVersionChanged(string ver)
         {
             _version = _refs.Contains(ver) ? ver : "HEAD";
-            _packageId = "";
+            _packageId = string.Empty;
             GitUtilities.GetPackageJson(_url, _version, OnPackageFetch);
         }
 
