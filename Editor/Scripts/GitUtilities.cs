@@ -20,7 +20,7 @@ namespace XRTK.PackageManager
         public static void GetRefs(string repoUrl, List<string> result, Action callback)
         {
             result.Clear();
-            string args = $"ls-remote --refs -q {repoUrl}";
+            var args = $"ls-remote --refs -q {repoUrl}";
 
             void GitCommandCallback(bool success, string output)
             {
@@ -41,8 +41,7 @@ namespace XRTK.PackageManager
         public static void GetPackageJson(string repoUrl, string branch, Action<string> onPackageFetch)
         {
             FileUtil.DeleteFileOrDirectory(k_Path);
-
-            string args = $"clone --depth=1 --branch {branch} --single-branch {repoUrl} {k_Path}";
+            var args = $"clone --depth=1 --branch {branch} --single-branch {repoUrl} {k_Path}";
             ExecuteGitCommand(args, (_, __) => onPackageFetch(PackageJsonHelper.GetPackageName(k_Path)));
         }
 
@@ -63,7 +62,7 @@ namespace XRTK.PackageManager
             if (launchProcess == null || launchProcess.HasExited || launchProcess.Id == 0)
             {
                 Debug.LogError("No 'git' executable was found. Please install Git on your system and restart Unity");
-                gitCommandCallback(false, "");
+                gitCommandCallback(false, string.Empty);
             }
             else
             {

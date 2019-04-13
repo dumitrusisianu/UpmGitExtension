@@ -18,27 +18,27 @@ namespace XRTK.PackageManager
 
         public static string GetRepoUrl(string url)
         {
-            Match m = Regex.Match(url, "(git@[^:]+):(.*)");
-            string repoUrl = m.Success ? $"ssh://{m.Groups[1].Value}/{m.Groups[2].Value}" : url;
+            var match = Regex.Match(url, "(git@[^:]+):(.*)");
+            var repoUrl = match.Success ? $"ssh://{match.Groups[1].Value}/{match.Groups[2].Value}" : url;
             return repoUrl.EndsWith(".git") ? repoUrl : $"{repoUrl}.git";
         }
 
         public static string GetRepoHttpUrl(PackageInfo packageInfo)
         {
-            return GetRepoHttpUrl(packageInfo != null ? packageInfo.packageId : "");
+            return GetRepoHttpUrl(packageInfo != null ? packageInfo.packageId : string.Empty);
         }
 
         public static string GetRepoHttpUrl(string packageId)
         {
-            Match m = Regex.Match(packageId, "^[^@]+@([^#]+)(#.+)?$");
+            var match = Regex.Match(packageId, "^[^@]+@([^#]+)(#.+)?$");
 
-            if (!m.Success) { return ""; }
+            if (!match.Success) { return string.Empty; }
 
-            var repoUrl = m.Groups[1].Value;
+            var repoUrl = match.Groups[1].Value;
             repoUrl = Regex.Replace(repoUrl, "(git:)?git@([^:]+):", "https://$2/");
             repoUrl = repoUrl.Replace("ssh://", "https://");
-            repoUrl = repoUrl.Replace("git@", "");
-            repoUrl = Regex.Replace(repoUrl, "\\.git$", "");
+            repoUrl = repoUrl.Replace("git@", string.Empty);
+            repoUrl = Regex.Replace(repoUrl, "\\.git$", string.Empty);
 
             return repoUrl;
 
@@ -46,32 +46,32 @@ namespace XRTK.PackageManager
 
         public static string GetRefName(string packageId)
         {
-            Match m = Regex.Match(packageId, "^[^@]+@[^#]+#(.+)$");
-            return m.Success ? m.Groups[1].Value : "";
+            var match = Regex.Match(packageId, "^[^@]+@[^#]+#(.+)$");
+            return match.Success ? match.Groups[1].Value : string.Empty;
         }
 
         public static string GetRepoId(string packageId)
         {
-            Match m = Regex.Match(GetRepoHttpUrl(packageId), "/([^/]+/[^/]+)$");
-            return m.Success ? m.Groups[1].Value : "";
+            var match = Regex.Match(GetRepoHttpUrl(packageId), "/([^/]+/[^/]+)$");
+            return match.Success ? match.Groups[1].Value : string.Empty;
         }
 
         public static string GetRevisionHash(PackageInfo packageInfo)
         {
-            return GetRevisionHash(packageInfo != null ? packageInfo.resolvedPath : "");
+            return GetRevisionHash(packageInfo != null ? packageInfo.resolvedPath : string.Empty);
         }
 
         private static string GetRevisionHash(string resolvedPath)
         {
-            Match m = Regex.Match(resolvedPath, "@([^@]+)$");
-            return m.Success ? m.Groups[1].Value : "";
+            var match = Regex.Match(resolvedPath, "@([^@]+)$");
+            return match.Success ? match.Groups[1].Value : string.Empty;
         }
 
         public static string GetFileURL(PackageInfo packageInfo, string filePath)
         {
             return packageInfo != null
                 ? GetFileURL(packageInfo.packageId, packageInfo.resolvedPath, filePath)
-                : "";
+                : string.Empty;
         }
 
         private static string GetFileURL(string packageId, string resolvedPath, string filePath)
@@ -80,28 +80,28 @@ namespace XRTK.PackageManager
                 string.IsNullOrEmpty(packageId) ||
                 string.IsNullOrEmpty(resolvedPath))
             {
-                return "";
+                return string.Empty;
             }
 
-            string repoURL = GetRepoHttpUrl(packageId);
-            string hash = GetRevisionHash(resolvedPath);
-            string blob = PackageManagerSettings.GetHostData(packageId).Blob;
+            var repoUrl = GetRepoHttpUrl(packageId);
+            var hash = GetRevisionHash(resolvedPath);
+            var blob = PackageManagerSettings.GetHostData(packageId).Blob;
 
-            return $"{repoURL}/{blob}/{hash}/{filePath}";
+            return $"{repoUrl}/{blob}/{hash}/{filePath}";
         }
 
         public static string GetFilePath(PackageInfo packageInfo, string filePattern)
         {
             return packageInfo != null
                 ? GetFilePath(packageInfo.resolvedPath, filePattern)
-                : "";
+                : string.Empty;
         }
 
         private static string GetFilePath(string resolvedPath, string filePattern)
         {
             if (string.IsNullOrEmpty(resolvedPath) || string.IsNullOrEmpty(filePattern))
             {
-                return "";
+                return string.Empty;
             }
 
             foreach (var path in Directory.EnumerateFiles(resolvedPath, filePattern))
@@ -112,25 +112,25 @@ namespace XRTK.PackageManager
                 }
             }
 
-            return "";
+            return string.Empty;
         }
 
         public static string GetSpecificPackageId(string packageId, string tag)
         {
             if (string.IsNullOrEmpty(packageId))
             {
-                return "";
+                return string.Empty;
             }
 
-            Match m = Regex.Match(packageId, "^([^#]+)(#.+)?$");
+            var match = Regex.Match(packageId, "^([^#]+)(#.+)?$");
 
-            if (m.Success)
+            if (match.Success)
             {
-                var id = m.Groups[1].Value;
+                var id = match.Groups[1].Value;
                 return string.IsNullOrEmpty(tag) ? id : $"{id}#{tag}";
             }
 
-            return "";
+            return string.Empty;
         }
 
         public static void AddPackage(string packageId, Action<Request> callback = null)
