@@ -9,7 +9,7 @@ namespace XRTK.PackageManager
         public string Name = "web";
         public string Domain = "undefined";
         public string Blob = "blob";
-        public Texture2D LogoDark = null;
-        public Texture2D LogoLight = null;
+        public Texture2D LogoDark;
+        public Texture2D LogoLight;
     }
 }
