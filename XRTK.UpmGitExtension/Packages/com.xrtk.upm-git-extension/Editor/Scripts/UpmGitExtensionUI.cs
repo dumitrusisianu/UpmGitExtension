@@ -20,11 +20,7 @@ namespace XRTK.PackageManager
     [InitializeOnLoad]
     internal class UpmGitExtensionUI : VisualElement, IPackageManagerExtension
     {
-#if UPM_GIT_EXT_PROJECT
-        private const string ResourcesPath = "Assets/XRTK.UpmGitExtension/Editor/Resources/";
-#else
-        const string ResourcesPath = "Packages/com.xrtk.upm-git-extension/Editor/Resources/";
-#endif
+        private const string ResourcesPath = "Packages/com.xrtk.upm-git-extension/Editor/Resources/";
         private const string TemplatePath = ResourcesPath + "UpmGitExtension.uxml";
         private const string StylePath = ResourcesPath + "UpmGitExtension.uss";
 
@@ -215,12 +211,12 @@ namespace XRTK.PackageManager
 
             menu.AddItem(new GUIContent($"{currentRefName} - current"), _selectedRefName == currentRefName, SetVersion, currentRefName);
 
-            // x.y(.z-sufix) only 
+            // x.y(.z-suffix) only 
             foreach (var t in _refs.Where(x => Regex.IsMatch(x, "^\\d+\\.\\d+.*$")).OrderByDescending(x => x))
             {
-                string target = t;
-                bool isCurrent = currentRefName == target;
-                GUIContent text = new GUIContent($"All Versions/{(isCurrent ? $"{target} - current" : target)}");
+                var target = t;
+                var isCurrent = currentRefName == target;
+                var text = new GUIContent($"All Versions/{(isCurrent ? $"{target} - current" : target)}");
                 menu.AddItem(text, isCurrent, SetVersion, target);
             }
 
