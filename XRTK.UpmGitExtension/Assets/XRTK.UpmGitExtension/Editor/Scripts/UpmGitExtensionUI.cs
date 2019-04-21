@@ -20,10 +20,6 @@ namespace XRTK.PackageManager
     [InitializeOnLoad]
     internal class UpmGitExtensionUI : VisualElement, IPackageManagerExtension
     {
-        private const string ResourcesPath = "Packages/com.xrtk.upm-git-extension/Editor/Resources/";
-        private const string TemplatePath = ResourcesPath + "UpmGitExtension.uxml";
-        private const string StylePath = ResourcesPath + "UpmGitExtension.uss";
-
         private readonly List<string> _refs = new List<string>();
 
         private bool _initialized = false;
@@ -144,16 +140,31 @@ namespace XRTK.PackageManager
         {
             if (_initialized) { return; }
 
-            var asset = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(TemplatePath);
+            const string resourcesPath = "Editor/Resources/";
+            const string packagesRootPath = "Packages/com.xrtk.upm-git-extension/";
+            const string assetsRootPath = "Assets/XRTK.UpmGitExtension/";
 
-            if (!asset) { return; }
+            var templatePath = $"{packagesRootPath}{resourcesPath}UpmGitExtension.uxml";
+            var stylePath = $"{packagesRootPath}{resourcesPath}UpmGitExtension.uss";
+
+            var asset = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(templatePath);
+
+            if (asset == null)
+            {
+                templatePath = $"{assetsRootPath}{resourcesPath}UpmGitExtension.uxml";
+                stylePath = $"{assetsRootPath}{resourcesPath}UpmGitExtension.uss";
+
+                asset = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(templatePath);
+            }
+
+            if (asset == null) { return; }
 
 #if UNITY_2019_1_OR_NEWER
             _gitDetailActions = asset.CloneTree().Q("detailActions");
-            _gitDetailActions.styleSheets.Add(AssetDatabase.LoadAssetAtPath<StyleSheet> (StylePath));
+            _gitDetailActions.styleSheets.Add(AssetDatabase.LoadAssetAtPath<StyleSheet> (stylePath));
 #else
             _gitDetailActions = asset.CloneTree(null).Q("detailActions");
-            _gitDetailActions.AddStyleSheetPath(StylePath);
+            _gitDetailActions.AddStyleSheetPath(stylePath);
 #endif
 
             // Add callbacks
@@ -211,7 +222,7 @@ namespace XRTK.PackageManager
 
             menu.AddItem(new GUIContent($"{currentRefName} - current"), _selectedRefName == currentRefName, SetVersion, currentRefName);
 
-            // x.y(.z-suffix) only 
+            // x.y(.z-suffix) only
             foreach (var t in _refs.Where(x => Regex.IsMatch(x, "^\\d+\\.\\d+.*$")).OrderByDescending(x => x))
             {
                 var target = t;
@@ -220,7 +231,7 @@ namespace XRTK.PackageManager
                 menu.AddItem(text, isCurrent, SetVersion, target);
             }
 
-            // other 
+            // other
             menu.AddItem(new GUIContent("All Versions/Other/(default)"), _selectedRefName == "", SetVersion, "(default)");
 
             foreach (var t in _refs.Where(x => !Regex.IsMatch(x, "^\\d+\\.\\d+.*$")).OrderByDescending(x => x))
