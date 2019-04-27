@@ -1,19 +1,14 @@
-﻿using UnityEngine;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using System.Text.RegularExpressions;
 using UnityEditor;
 using UnityEditor.PackageManager;
 using UnityEditor.PackageManager.UI;
-using PackageInfo = UnityEditor.PackageManager.PackageInfo;
-using System.Linq;
-using System.Text.RegularExpressions;
-using System.Collections.Generic;
-using System;
-using System.Reflection;
-
-#if UNITY_2019_1_OR_NEWER
+using UnityEngine;
 using UnityEngine.UIElements;
-#else
-using UnityEngine.Experimental.UIElements;
-#endif
+using PackageInfo = UnityEditor.PackageManager.PackageInfo;
 
 namespace XRTK.PackageManager
 {
@@ -142,7 +137,6 @@ namespace XRTK.PackageManager
 
             const string resourcesPath = "Editor/Resources/";
             const string packagesRootPath = "Packages/com.xrtk.upm-git-extension/";
-            const string assetsRootPath = "Assets/XRTK.UpmGitExtension/";
 
             var templatePath = $"{packagesRootPath}{resourcesPath}UpmGitExtension.uxml";
             var stylePath = $"{packagesRootPath}{resourcesPath}UpmGitExtension.uss";
@@ -151,21 +145,12 @@ namespace XRTK.PackageManager
 
             if (asset == null)
             {
-                templatePath = $"{assetsRootPath}{resourcesPath}UpmGitExtension.uxml";
-                stylePath = $"{assetsRootPath}{resourcesPath}UpmGitExtension.uss";
-
-                asset = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(templatePath);
+                Debug.LogError("Failed to load package manager UI extension!");
+                return;
             }
 
-            if (asset == null) { return; }
-
-#if UNITY_2019_1_OR_NEWER
             _gitDetailActions = asset.CloneTree().Q("detailActions");
-            _gitDetailActions.styleSheets.Add(AssetDatabase.LoadAssetAtPath<StyleSheet> (stylePath));
-#else
-            _gitDetailActions = asset.CloneTree(null).Q("detailActions");
-            _gitDetailActions.AddStyleSheetPath(stylePath);
-#endif
+            _gitDetailActions.styleSheets.Add(AssetDatabase.LoadAssetAtPath<StyleSheet>(stylePath));
 
             // Add callbacks
             _hostingIcon.clickable.clicked += () => Application.OpenURL(UnityPackageUtilities.GetRepoHttpUrl(_packageInfo));

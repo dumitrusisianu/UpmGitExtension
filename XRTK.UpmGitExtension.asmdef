@@ -1,5 +1,5 @@
 {
-    "name": "XRTK.UpmGitExtension.Editor",
+    "name": "XRTK.UpmGitExtension",
     "references": [
         "Unity.PackageManagerUI.Editor"
     ],
@@ -14,5 +14,6 @@
         "Markdig.dll"
     ],
     "autoReferenced": false,
-    "defineConstraints": []
+    "defineConstraints": [],
+    "versionDefines": []
 }

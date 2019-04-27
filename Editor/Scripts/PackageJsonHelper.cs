@@ -1,8 +1,4 @@
-﻿#if UNITY_2019_1_OR_NEWER
-using UnityEngine.UIElements;
-#else
-#endif
-using UnityEngine;
+﻿using UnityEngine;
 using System;
 using System.IO;
 
