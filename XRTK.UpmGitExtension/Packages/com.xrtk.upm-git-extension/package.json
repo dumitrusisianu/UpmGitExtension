@@ -2,8 +2,8 @@
   "name": "com.xrtk.upm-git-extension",
   "displayName": "XRTK.UpmGitExtension",
   "description": "This plugin extends the UI of Unity Package Manager for the packages installed with git.\n\n - Support GitHub, Bitbucket and GitLab\n - Add link to the repogitory\n - link to the online documents\n - Update the package with a specific tag/branch\n - Remove the package",
-  "version": "0.9.4",
-  "unity": "2018.3",
+  "version": "0.9.5",
+  "unity": "2019.1",
   "license": "MIT",
   "repository": {
     "type": "git",

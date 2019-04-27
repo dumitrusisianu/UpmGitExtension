@@ -1,7 +1,7 @@
 {
     "name": "XRTK.UpmGitExtension.EditorTests",
     "references": [
-        "XRTK.UpmGitExtension.Editor"
+        "XRTK.UpmGitExtension"
     ],
     "optionalUnityReferences": [
         "TestAssemblies"
@@ -14,5 +14,6 @@
     "overrideReferences": false,
     "precompiledReferences": [],
     "autoReferenced": true,
-    "defineConstraints": []
+    "defineConstraints": [],
+    "versionDefines": []
 }
