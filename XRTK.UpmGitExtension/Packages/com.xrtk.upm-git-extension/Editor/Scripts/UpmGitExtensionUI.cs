@@ -1,33 +1,20 @@
-﻿using UnityEngine;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using System.Text.RegularExpressions;
 using UnityEditor;
 using UnityEditor.PackageManager;
 using UnityEditor.PackageManager.UI;
-using PackageInfo = UnityEditor.PackageManager.PackageInfo;
-using System.Linq;
-using System.Text.RegularExpressions;
-using System.Collections.Generic;
-using System;
-using System.Reflection;
-
-#if UNITY_2019_1_OR_NEWER
+using UnityEngine;
 using UnityEngine.UIElements;
-#else
-using UnityEngine.Experimental.UIElements;
-#endif
+using PackageInfo = UnityEditor.PackageManager.PackageInfo;
 
 namespace XRTK.PackageManager
 {
     [InitializeOnLoad]
     internal class UpmGitExtensionUI : VisualElement, IPackageManagerExtension
     {
-#if UPM_GIT_EXT_PROJECT
-        private const string ResourcesPath = "Assets/XRTK.UpmGitExtension/Editor/Resources/";
-#else
-        const string ResourcesPath = "Packages/com.xrtk.upm-git-extension/Editor/Resources/";
-#endif
-        private const string TemplatePath = ResourcesPath + "UpmGitExtension.uxml";
-        private const string StylePath = ResourcesPath + "UpmGitExtension.uss";
-
         private readonly List<string> _refs = new List<string>();
 
         private bool _initialized = false;
@@ -148,17 +135,22 @@ namespace XRTK.PackageManager
         {
             if (_initialized) { return; }
 
-            var asset = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(TemplatePath);
+            const string resourcesPath = "Editor/Resources/";
+            const string packagesRootPath = "Packages/com.xrtk.upm-git-extension/";
 
-            if (!asset) { return; }
+            var templatePath = $"{packagesRootPath}{resourcesPath}UpmGitExtension.uxml";
+            var stylePath = $"{packagesRootPath}{resourcesPath}UpmGitExtension.uss";
 
-#if UNITY_2019_1_OR_NEWER
+            var asset = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(templatePath);
+
+            if (asset == null)
+            {
+                Debug.LogError("Failed to load package manager UI extension!");
+                return;
+            }
+
             _gitDetailActions = asset.CloneTree().Q("detailActions");
-            _gitDetailActions.styleSheets.Add(AssetDatabase.LoadAssetAtPath<StyleSheet> (StylePath));
-#else
-            _gitDetailActions = asset.CloneTree(null).Q("detailActions");
-            _gitDetailActions.AddStyleSheetPath(StylePath);
-#endif
+            _gitDetailActions.styleSheets.Add(AssetDatabase.LoadAssetAtPath<StyleSheet>(stylePath));
 
             // Add callbacks
             _hostingIcon.clickable.clicked += () => Application.OpenURL(UnityPackageUtilities.GetRepoHttpUrl(_packageInfo));
@@ -215,16 +207,16 @@ namespace XRTK.PackageManager
 
             menu.AddItem(new GUIContent($"{currentRefName} - current"), _selectedRefName == currentRefName, SetVersion, currentRefName);
 
-            // x.y(.z-sufix) only 
+            // x.y(.z-suffix) only
             foreach (var t in _refs.Where(x => Regex.IsMatch(x, "^\\d+\\.\\d+.*$")).OrderByDescending(x => x))
             {
-                string target = t;
-                bool isCurrent = currentRefName == target;
-                GUIContent text = new GUIContent($"All Versions/{(isCurrent ? $"{target} - current" : target)}");
+                var target = t;
+                var isCurrent = currentRefName == target;
+                var text = new GUIContent($"All Versions/{(isCurrent ? $"{target} - current" : target)}");
                 menu.AddItem(text, isCurrent, SetVersion, target);
             }
 
-            // other 
+            // other
             menu.AddItem(new GUIContent("All Versions/Other/(default)"), _selectedRefName == "", SetVersion, "(default)");
 
             foreach (var t in _refs.Where(x => !Regex.IsMatch(x, "^\\d+\\.\\d+.*$")).OrderByDescending(x => x))
