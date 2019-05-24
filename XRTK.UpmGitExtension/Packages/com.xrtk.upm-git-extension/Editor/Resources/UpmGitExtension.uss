@@ -4,15 +4,15 @@
 }
 
 #detailActions #hostingIcon {
-  width: 16;
-  height: 16;
-  margin-left: 0;
-  margin-right: 0;
-  border-left: 0;
-  border-right: 0;
-  slice-left: 0;
-  slice-right: 0;
-  slice-top: 0;
-  slice-bottom: 0;
+  width: 16px;
+  height: 16px;
+  margin-left: 0px;
+  margin-right: 0px;
+  border-left: 0px;
+  border-right: 0px;
+  slice-left: 0px;
+  slice-right: 0px;
+  slice-top: 0px;
+  slice-bottom: 0px;
   cursor: link;
 }
